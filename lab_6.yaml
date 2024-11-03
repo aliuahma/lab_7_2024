@@ -74,9 +74,3 @@ joint_state_broadcaster:
   ros__parameters:
     update_rate: 250
     use_local_topics: false
-
-camera_node:
-  ros__parameters:
-    format: "RGB8888"
-    width: 1400
-    height: 1050

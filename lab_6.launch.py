@@ -34,7 +34,7 @@ def generate_launch_description():
     robot_controllers = ParameterFile(
         PathJoinSubstitution(
             [
-                "config.yaml",
+                "lab_6.yaml",
             ]
         ),
         allow_substs=True,
@@ -87,7 +87,7 @@ def generate_launch_description():
         package="camera_ros",
         executable="camera_node",
         output="both",
-        parameters=[robot_description],
+        parameters=[{"format": "RGB888", "width": 1400, "height": 1050}],
     )
 
     nodes = [
@@ -96,6 +96,7 @@ def generate_launch_description():
         control_node,
         robot_controller_spawner,
         joint_state_broadcaster_spawner,
+        camera_node,
     ]
 
     return LaunchDescription(nodes)
