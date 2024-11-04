@@ -9,8 +9,6 @@ IMAGE_WIDTH = 1400
 
 # TODO: Add your new constants here
 
-IMAGE_WIDTH = 1400
-
 TIMEOUT = pass #TODO threshold in timer_callback
 SEARCH_YAW_VEL = pass #TODO searching constant
 TRACK_FORWARD_VEL = pass #TODO tracking constant
