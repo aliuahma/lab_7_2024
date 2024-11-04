@@ -7,6 +7,8 @@ import numpy as np
 
 IMAGE_WIDTH = 1400
 
+# TODO: Add your new constants here
+
 class State(Enum):
     SEARCH = 0
     TRACK = 1
@@ -48,7 +50,7 @@ class StateMachineNode(Node):
         if self.state == State.SEARCH:
             pass # TODO: Part 3.1
         elif self.state == State.TRACK:
-            pass # TODO: Part 2 / 3.3
+            pass # TODO: Part 2 / 3.4
 
         cmd = Twist()
         cmd.angular.z = yaw_command
