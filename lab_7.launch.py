@@ -34,7 +34,7 @@ def generate_launch_description():
     robot_controllers = ParameterFile(
         PathJoinSubstitution(
             [
-                "lab_6.yaml",
+                "lab_7.yaml",
             ]
         ),
         allow_substs=True,
