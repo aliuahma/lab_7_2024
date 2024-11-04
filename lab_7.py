@@ -9,6 +9,13 @@ IMAGE_WIDTH = 1400
 
 # TODO: Add your new constants here
 
+IMAGE_WIDTH = 1400
+
+TIMEOUT = pass #TODO
+SEARCH_YAW_VEL = pass #TODO
+TRACK_FORWARD_VEL = pass #TODO
+KP = pass #TODO
+
 class State(Enum):
     SEARCH = 0
     TRACK = 1
