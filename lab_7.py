@@ -25,11 +25,19 @@ class VisualServoingNode(Node):
 
         self.timer = self.create_timer(0.1, self.timer_callback)  # 10Hz control loop
 
+        self.target_pos_x = 0.0 # Variable to store the position of the bounding box currently being tracked
+
     def detection_callback(self, msg):
-        pass
+        pass # Replace with your code
 
     def timer_callback(self):
-        pass
+        yaw_command = 0.0 # Replace with your code
+        forward_vel_command = 0.0
+
+        cmd = Twist()
+        cmd.angular.z = yaw_command
+        cmd.linear.x = forward_vel_command
+        self.command_publisher.publish(cmd)
 
 def main():
     rclpy.init()
