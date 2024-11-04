@@ -1,3 +1,4 @@
+from enum import Enum
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -6,9 +7,13 @@ import numpy as np
 
 IMAGE_WIDTH = 1400
 
-class VisualServoingNode(Node):
+class State(Enum):
+    SEARCH = 0
+    TRACK = 1
+
+class StateMachineNode(Node):
     def __init__(self):
-        super().__init__('visual_servoing_node')
+        super().__init__('state_machine_node')
 
         self.detection_subscription = self.create_subscription(
             Detection2DArray,
@@ -23,16 +28,27 @@ class VisualServoingNode(Node):
             10
         )
 
-        self.timer = self.create_timer(0.1, self.timer_callback)  # 10Hz control loop
+        self.timer = self.create_timer(0.1, self.timer_callback)
+        self.state = State.TRACK
 
-        self.target_pos_x = 0.0 # Variable to store the position of the bounding box currently being tracked
+        # TODO: Add your new member variables here
 
     def detection_callback(self, msg):
-        pass # Replace with your code
+        pass # TODO: Part 1
 
     def timer_callback(self):
-        yaw_command = 0.0 # Replace with your code
+        if False: # TODO: Part 3.2
+            self.state = State.SEARCH
+        else:
+            self.state = State.TRACK
+
+        yaw_command = 0.0
         forward_vel_command = 0.0
+
+        if self.state == State.SEARCH:
+            pass # TODO: Part 3.1
+        elif self.state == State.TRACK:
+            pass # TODO: Part 2 / 3.3
 
         cmd = Twist()
         cmd.angular.z = yaw_command
@@ -41,17 +57,17 @@ class VisualServoingNode(Node):
 
 def main():
     rclpy.init()
-    visual_servoing_node = VisualServoingNode()
+    state_machine_node = StateMachineNode()
 
     try:
-        rclpy.spin(visual_servoing_node)
+        rclpy.spin(state_machine_node)
     except KeyboardInterrupt:
         print("Program terminated by user")
     finally:
         zero_cmd = Twist()
-        visual_servoing_node.command_publisher.publish(zero_cmd)
+        state_machine_node.command_publisher.publish(zero_cmd)
 
-        visual_servoing_node.destroy_node()
+        state_machine_node.destroy_node()
         rclpy.shutdown()
 
 if __name__ == '__main__':
