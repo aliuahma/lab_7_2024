@@ -9,10 +9,10 @@ IMAGE_WIDTH = 1400
 
 # TODO: Add your new constants here
 
-TIMEOUT = pass #TODO threshold in timer_callback
-SEARCH_YAW_VEL = pass #TODO searching constant
-TRACK_FORWARD_VEL = pass #TODO tracking constant
-KP = pass #TODO proportional gain for tracking
+TIMEOUT = 0 #TODO threshold in timer_callback
+SEARCH_YAW_VEL = 0 #TODO searching constant
+TRACK_FORWARD_VEL = 0 #TODO tracking constant
+KP = 0 #TODO proportional gain for tracking
 
 class State(Enum):
     SEARCH = 0
@@ -39,12 +39,17 @@ class StateMachineNode(Node):
         self.state = State.TRACK
 
         # TODO: Add your new member variables here
-        self.kp = pass # TODO
+        self.kp = KP # TODO
 
     def detection_callback(self, msg):
         """
         Determine which of the HAILO detections is the most central detected object
         """
+        for i in msg.detections:
+            x = i.bbox.center.position.x
+            x = (x - IMAGE_WIDTH/2) / (IMAGE_WIDTH/2)
+            self.get_logger().info(f'x: {x}')
+        
         pass # TODO: Part 1
 
     def timer_callback(self):
