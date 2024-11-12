@@ -47,8 +47,13 @@ class StateMachineNode(Node):
         """
         for i in msg.detections:
             x = i.bbox.center.position.x
-            x = (x - IMAGE_WIDTH/2) / (IMAGE_WIDTH/2)
-            self.get_logger().info(f'x: {x}')
+            x = (x - (IMAGE_WIDTH/2)) / (IMAGE_WIDTH/2)
+            if abs(x) < self.most_centered:
+                self.most_centered = x 
+                self.most_recent_detection = msg.header.stamp.secs
+                self.get_logger().info(f'x: {self.most_centered}')
+                self.get_logger().info(f'time: {self.most_recent_detection}')
+
         
         pass # TODO: Part 1
 
