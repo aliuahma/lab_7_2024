@@ -40,6 +40,8 @@ class StateMachineNode(Node):
 
         # TODO: Add your new member variables here
         self.kp = KP # TODO
+        self.most_centered = float('inf')
+        self.most_recent_detection = 0
 
     def detection_callback(self, msg):
         """
@@ -47,13 +49,12 @@ class StateMachineNode(Node):
         """
         for i in msg.detections:
             x = i.bbox.center.position.x
-            x = (x - (IMAGE_WIDTH/2)) / (IMAGE_WIDTH/2)
+            x = (x - (IMAGE_WIDTH / 2)) / (IMAGE_WIDTH / 2)
             if abs(x) < self.most_centered:
-                self.most_centered = x 
-                self.most_recent_detection = msg.header.stamp.secs
+                self.most_centered = abs(x) 
+                self.most_recent_detection = msg.header.stamp.sec
                 self.get_logger().info(f'x: {self.most_centered}')
                 self.get_logger().info(f'time: {self.most_recent_detection}')
-
         
         pass # TODO: Part 1
 
