@@ -9,10 +9,10 @@ IMAGE_WIDTH = 1400
 
 # TODO: Add your new constants here
 
-TIMEOUT = 0 #TODO threshold in timer_callback
-SEARCH_YAW_VEL = 0 #TODO searching constant
-TRACK_FORWARD_VEL = 0 #TODO tracking constant
-KP = 0 #TODO proportional gain for tracking
+TIMEOUT = 5.0 #TODO threshold in timer_callback
+SEARCH_YAW_VEL = 0.3 #TODO searching constant
+TRACK_FORWARD_VEL = 0.3 #TODO tracking constant
+KP = 3.0 #TODO proportional gain for tracking
 
 class State(Enum):
     SEARCH = 0
@@ -40,30 +40,35 @@ class StateMachineNode(Node):
 
         # TODO: Add your new member variables here
         self.kp = KP # TODO
-        self.most_centered = float('inf')
+        self.most_centered = 1
         self.most_recent_detection = 0
+        self.current_time = 0
 
     def detection_callback(self, msg):
         """
         Determine which of the HAILO detections is the most central detected object
         """
+        self.current_time = msg.header.stamp.sec
+        self.most_centered = 1
         for i in msg.detections:
             x = i.bbox.center.position.x
-            x = (x - (IMAGE_WIDTH / 2)) / (IMAGE_WIDTH / 2)
-            if abs(x) < self.most_centered:
-                self.most_centered = abs(x) 
-                self.most_recent_detection = msg.header.stamp.sec
-                self.get_logger().info(f'x: {self.most_centered}')
-                self.get_logger().info(f'time: {self.most_recent_detection}')
-        
-        pass # TODO: Part 1
+            y = i.bbox.center.position.y
+
+            x = (x - (IMAGE_WIDTH/2)) / (IMAGE_WIDTH/2)
+            
+            if abs(x) < abs(self.most_centered):
+                    self.most_centered = x 
+                    self.most_recent_detection = msg.header.stamp.sec
+                    #self.get_logger().info(f'x: {self.most_centered}')
+                    #self.get_logger().info(f'time: {self.most_recent_detection}')
+                # self.get_logger().info(x)
 
     def timer_callback(self):
         """
         Implement a timer callback that sets the moves through the state machine based on if the time since the last detection is above a threshold TIMEOUT
         """
         
-        if False: # TODO: Part 3.2
+        if self.current_time - self.most_recent_detection > TIMEOUT: # TODO: Part 3.2
             self.state = State.SEARCH
         else:
             self.state = State.TRACK
@@ -72,9 +77,12 @@ class StateMachineNode(Node):
         forward_vel_command = 0.0
 
         if self.state == State.SEARCH:
-            pass # TODO: Part 3.1
+            yaw_command = SEARCH_YAW_VEL if self.most_centered < 0 else -SEARCH_YAW_VEL
         elif self.state == State.TRACK:
-            pass # TODO: Part 2 / 3.4
+            yaw_command  = self.kp*(-self.most_centered)
+            forward_vel_command = TRACK_FORWARD_VEL
+        self.get_logger().info(f'yaw: {yaw_command}')
+            # pass # TODO: Part 2 / 3.4
 
         cmd = Twist()
         cmd.angular.z = yaw_command
